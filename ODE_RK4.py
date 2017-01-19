@@ -44,22 +44,22 @@ def RK4(x_0, v_0, a, len_t, dt, m, k):
 	for i in range(len_t-1):
 		x_1 = x_num[i]
 		v_1 = v_num[i]
-		a_1 = a(x_1, k, m)
+		a_1 = a(x_1, k, m) #a flops
 		#-------------------
-		x_2 = x_1 + v_1*dt/2 
-		v_2 = v_1 + a_1*dt/2
-		a_2 = a(x_2, k, m)
+		x_2 = x_1 + v_1*dt/2 #4flops
+		v_2 = v_1 + a_1*dt/2 #4flops
+		a_2 = a(x_2, k, m) #a flops
 		#-------------------
-		x_3 = x_1 + v_2*dt/2
-		v_3 = v_1 + a_2*dt/2
-		a_3 = a(x_3, k, m)
+		x_3 = x_1 + v_2*dt/2 #4flops
+		v_3 = v_1 + a_2*dt/2 #4flops
+		a_3 = a(x_3, k, m) #a flops
 		#-------------------
-		x_4 = x_1 + v_3*dt
-		v_4 = v_1 + a_3*dt
-		a_4 = a(x_4, k, m)
+		x_4 = x_1 + v_3*dt #3 flops
+		v_4 = v_1 + a_3*dt #3 flops
+		a_4 = a(x_4, k, m) #a flops
 		#-------------------
-		x_num[i+1] = x_1 + (1/6.)*(v_1 + 2*v_2 + 2*v_3 + v_4)*dt
-		v_num[i+1] = v_1 + (1/6.)*(a_1 + 2*a_2 + 2*a_3 + a_4)*dt
+		x_num[i+1] = x_1 + (1/6.)*(v_1 + 2*v_2 + 2*v_3 + v_4)*dt #10 flops
+		v_num[i+1] = v_1 + (1/6.)*(a_1 + 2*a_2 + 2*a_3 + a_4)*dt #10 flops
 	#calculating start and end energy
 	E_start =  E_tot(x_num[0], v_num[0], k, m)
 	E_end =  E_tot(x_num[-1], v_num[-1], k, m)
