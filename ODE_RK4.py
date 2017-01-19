@@ -31,7 +31,6 @@ def Euler(x_0, v_0, a, len_t, dt, m, k):
 	for i in range(len_t-1):
 		x_num[i+1] = x_num[i] + dt*v_num[i]
 		v_num[i+1] = v_num[i] + dt*a(x_num[i],k, m)
-	
 	#calculating start and end energy
 	E_start =  E_tot(x_num[0], v_num[0], k, m)
 	E_end =  E_tot(x_num[-1], v_num[-1], k, m)
@@ -42,7 +41,6 @@ def RK4(x_0, v_0, a, len_t, dt, m, k):
 	v_num = zeros(len_t)
 	x_num[0] = x_0
 	v_num[0] = v_0
-
 	for i in range(len_t-1):
 		x_1 = x_num[i]
 		v_1 = v_num[i]
@@ -62,7 +60,6 @@ def RK4(x_0, v_0, a, len_t, dt, m, k):
 		#-------------------
 		x_num[i+1] = x_1 + (1/6.)*(v_1 + 2*v_2 + 2*v_3 + v_4)*dt
 		v_num[i+1] = v_1 + (1/6.)*(a_1 + 2*a_2 + 2*a_3 + a_4)*dt
-
 	#calculating start and end energy
 	E_start =  E_tot(x_num[0], v_num[0], k, m)
 	E_end =  E_tot(x_num[-1], v_num[-1], k, m)
@@ -83,7 +80,7 @@ t_end = 4 #scaling the time with pi
 
 #----------------------------------------------------------------------------------
 #doing all the timesteps in one go
-dt_list = linspace(0.1, 0.0001,20) #[0.1, 0.01, 0.001]
+dt_list = linspace(0.7, 0.0001,20) #[0.1, 0.01, 0.001] 
 col_list = ['b', 'g', 'k']
 
 #storing values of the energy calculated after the integration
@@ -93,9 +90,8 @@ E_start_RK4 = zeros(len(dt_list))
 E_end_RK4 = zeros(len(dt_list))
 
 #---------------------------------------------------------------------------------
-
-#plotting the 3 timesteps for euler and RK4:
-figure(1)
+#calculating for all timesteps for euler and RK4:
+#figure(1)
 for j in range(len(dt_list)): 
 	N = (t_end - t_0)/dt_list[j]
 	t = linspace(t_0, t_end, N+1)
@@ -104,25 +100,27 @@ for j in range(len(dt_list)):
 	x_euler, E_start_euler[j], E_end_euler[j] = Euler(x_0, v_0, a, len(t), dt_list[j], m, k)
 	#plot(t, x_RK4, col_list[j])
 	#plot(t, x_euler, col_list[j])
-
 #analytical:
 #plot(t, x(t, x_m, omega), 'r--') 
 #legend(['dt=0.1', 'dt=0.01', 'dt=0.001', 'analytical'])
-title('Position versus time with the Euler method')
-xlabel('t/pi')
-ylabel('x')
+#title('Position versus time with the Euler method')
+#xlabel('t/pi')
+#ylabel('x')
 
+print 'Difference in relative change in energy between Euler and RK4:' 
+print abs(epsilon(E_start_euler, E_end_euler) - epsilon(E_start_RK4, E_end_RK4))
+print 'for the timesteps [0.1, 0.01, 0.001]'
 
 #plotting the change in total error:
 figure(2)
 loglog(dt_list, epsilon(E_start_euler, E_end_euler) , 'bo-') 
 loglog(dt_list, epsilon(E_start_RK4, E_end_RK4) , 'ro-') 
+loglog(dt_list, 1e-2*ones(len(dt_list)), 'k')
 
-legend(['Euler', 'RK4'], loc='upper left')
+legend(['Euler', 'RK4', 'Accuracy wanted'], loc='center left')
 title('Relative change in total energy versus timestep')
 xlabel('dt/pi')
 ylabel('epsilon')
-
 
 show()
 
